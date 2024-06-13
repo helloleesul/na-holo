@@ -68,6 +68,11 @@ export interface TalkDetailResponse extends ResponseModel {
    * 게시물 조회수
    */
   view: number;
+
+  /**
+   * 멤버 프로필 이미지 URL
+   */
+  imageUrl: string | undefined;
 }
 
 export const talkDetailGetFetch = ({ id }: TalkDetailGetFetchParams) => apiFetch.get<TalkDetailResponse>(`/talk/${id}`);
