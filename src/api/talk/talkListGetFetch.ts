@@ -37,6 +37,11 @@ export interface TalkListResponse extends ResponseModel {
     memberName: string;
 
     /**
+     * 유저 프로필 이미지 URL
+     */
+    imageUrl: string;
+
+    /**
      * 댓글 개수
      */
     commentCount: number;
