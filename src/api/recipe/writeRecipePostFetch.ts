@@ -1,7 +1,7 @@
 import { apiFetch } from '../common';
 import { ResponseModel } from '../model';
 
-export interface WriteReciepePostFetchParams {
+export interface WriteRecipePostFetchParams {
   /**
    * 레시피 이름
    */
@@ -21,13 +21,13 @@ export interface WriteReciepePostFetchParams {
    * 레시피 유형
    * - 시간이 없어요.. 어떤 리터럴인지 constants 봐주세요..
    */
-  reciepeType: string;
+  recipeType: string;
 
   /**
    * 조리 시간.
    * - 22..
    */
-  reciepeTime: string;
+  recipeTime: string;
 
   /**
    * 어디 나라 음식?
@@ -86,10 +86,10 @@ export interface WriteReciepePostFetchParams {
   }[];
 }
 
-export interface WriteReciepeResponse extends ResponseModel {}
+export interface WriteRecipeResponse extends ResponseModel {}
 
 /**
  * 레시피 작성 및 등록
  */
-export const writeReciepePostFetch = (params: WriteReciepePostFetchParams) =>
-  apiFetch.post<WriteReciepeResponse>('/recipes', params);
+export const writeRecipePostFetch = (params: WriteRecipePostFetchParams) =>
+  apiFetch.post<WriteRecipeResponse>('/recipes', params);

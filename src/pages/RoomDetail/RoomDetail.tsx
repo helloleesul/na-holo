@@ -1,8 +1,8 @@
-import { useParams } from 'react-router-dom';
+import { generatePath, useNavigate, useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 
 import { Appbar } from '@/components/Appbar';
-// import { Marks } from '@/components/Marks';
+import { Marks } from '@/components/Marks';
 import { Layout } from '@/layout';
 import { useRoomDetailQuery } from '@/services/room/useRoomDetailQuery';
 
@@ -15,28 +15,41 @@ import { Eye, MessageSquareMore } from 'lucide-react';
 import { useCommentListQuery } from '@/services/comment/useCommentListQuery';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { commentSchema } from '../ReciepeDetail/validator';
+import { commentSchema } from '../RecipeDetail/validator';
 import { addCommentPostFetch } from '@/api/comment/addCommentPostFetch';
 import { CommentForm } from '@/components/CommentForm';
 import { SkeletonComment } from '@/components/SkeletonComment';
 import { Comment } from '@/components/Comment';
 import { useUserStore } from '@/store/useUserStore';
 import { Spinner } from '@/components/Spinner';
+import { Confirm } from '@/components/Confirm';
+import { useModalStore } from '@/store/useModalStore';
+import { useRoomDeleteMutation } from '@/services/room/useRoomDeleteMutation';
+import { PATH } from '@/constants/paths';
 
 /**
  * 방자랑 게시글 상세페이지
  */
 const RoomDetail = () => {
   const { id: roomId } = useParams();
+
   const userId = useUserStore((state) => state.id);
   const userProfileImage = useUserStore((state) => state.imageUrl);
 
-  // TODO: isNaN roomId 404페이지로 이동시키기
-  // console.info('🚀 ~ RoomDetail ~ roomId:', roomId);
+  const onOpen = useModalStore((state) => state.onOpen);
+  const setModal = useModalStore((state) => state.setModal);
+  const onClose = useModalStore((state) => state.onClose);
+
+  const navigate = useNavigate();
+
+  const { mutate } = useRoomDeleteMutation();
+
   if (!roomId) return;
 
-  const { data, isFetching } = useRoomDetailQuery({ roomId });
-  console.info('🚀 ~ RoomDetail ~ data:', data);
+  const { data, isLoading, isError, refetch: detailRefetch } = useRoomDetailQuery({ roomId });
+  // console.info('🚀 ~ RoomDetail ~ data:', data);
+
+  if (isError) navigate('/not-found');
 
   const {
     data: commentData,
@@ -79,6 +92,19 @@ const RoomDetail = () => {
     }
   });
 
+  const handleNavigate = () => {
+    navigate(
+      generatePath(PATH.roomWrite, {
+        id: roomId,
+      }),
+    );
+  };
+
+  const handleRemoveRoom = () => {
+    mutate({ roomId });
+    onClose();
+  };
+
   const OPTIONS: EmblaOptionsType = {};
   const SLIDES = data?.contentImages;
 
@@ -86,16 +112,10 @@ const RoomDetail = () => {
     <>
       <Appbar />
       <Layout>
-        {!isFetching ? (
+        {!isLoading ? (
           <>
             {/* TODO: 좋아요, 북마크 완료되면 붙이기 */}
-            {/* <Marks
-              onLikesSubmit={() => alert('좋아요 반영 핸들러')}
-              onBookmarkSubmit={() => alert('북마크 반영 핸들러')}
-              likes={data?.likeCount}
-              isLike={data?.likeCount}
-              isBookmark={data?.scrapCount}
-            /> */}
+            <Marks postId={Number(roomId)} data={data} refetch={detailRefetch} />
             <div className="w-3/4 mx-auto flex flex-col gap-8 pb-8">
               <section className="border-b pb-4 flex justify-between items-center">
                 <h3 className="text-3xl font-semibold">{data?.title}</h3>
@@ -104,12 +124,26 @@ const RoomDetail = () => {
                     <Button
                       className="rounded-none text-gray700  hover:bg-white hover:border-gray400"
                       variant="outline"
+                      onClick={handleNavigate}
                     >
                       수정
                     </Button>
                     <Button
                       className="rounded-none text-gray700  hover:bg-white hover:border-gray400"
                       variant="outline"
+                      onClick={() => {
+                        setModal(
+                          <Confirm
+                            title="방자랑 삭제"
+                            content="방자랑을 삭제하시겠어요?"
+                            submitButtonText="삭제"
+                            onSubmit={handleRemoveRoom}
+                            onClose={onClose}
+                          />,
+                        );
+
+                        onOpen();
+                      }}
                     >
                       삭제
                     </Button>

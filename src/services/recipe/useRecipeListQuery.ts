@@ -1,13 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-
-import { recipeListGetFetch, RecipeListGetFetchParmas } from '@/api/reciepe/recipeListGetFetch';
-
-import { COOK_TIME } from '@/pages/ReciepeWrite/constants';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { recipeListGetFetch, RecipeListGetFetchParams } from '@/api/recipe/recipeListGetFetch';
+import { COOK_TIME } from '@/pages/RecipeWrite/constants';
 
 /**
  * 레시피 전체 조회
  */
-export const useRecipeListQuery = (params: RecipeListGetFetchParmas) =>
+export const useRecipeListQuery = (params: RecipeListGetFetchParams) =>
   useQuery({
     queryKey: ['@recipeList', params],
     queryFn: async () => {
@@ -34,4 +32,5 @@ export const useRecipeListQuery = (params: RecipeListGetFetchParmas) =>
       };
     },
     staleTime: 5000,
+    placeholderData: keepPreviousData,
   });

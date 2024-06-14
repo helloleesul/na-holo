@@ -25,6 +25,8 @@ import { memberInfoGetFetch } from '@/api/member/memberInfoGetFetch';
 
 import { KakaoButton } from '@/components/KakaoButton';
 import { KakaoAuthUrlGetFetch } from '@/api/member/kakaoAuthUrlGetFetch';
+import { naverAuthUrlGetFetch } from '@/api/member/naverAuthUrlGetFetch';
+import dayjs from 'dayjs';
 
 const Login = () => {
   const navigate = usePageMoveHandler();
@@ -61,7 +63,7 @@ const Login = () => {
 
       const userInfoRes = await memberInfoGetFetch();
 
-      setUserInfo(userInfoRes.data);
+      setUserInfo({ ...userInfoRes.data, birth: dayjs(userInfoRes.data.birth).format('YYYYMMDD') });
 
       toast({
         title: data.message || '로그인 성공',
@@ -105,6 +107,28 @@ const Login = () => {
     }
   };
 
+  const handleNaverLogin = async () => {
+    try {
+      const urlResponse = await naverAuthUrlGetFetch();
+
+      const naverUrl = document.createElement('a');
+
+      naverUrl.setAttribute('href', urlResponse.data);
+
+      naverUrl.click();
+    } catch (error) {
+      console.error(error);
+
+      if (isAxiosError(error)) {
+        toast({
+          title: error?.response?.data.message || '네이버 로그인 실패',
+          icon: <CircleXIcon />,
+          className: TOAST.error,
+        });
+      }
+    }
+  };
+
   console.info('파라미터 확인', getValues());
 
   return (
@@ -113,7 +137,7 @@ const Login = () => {
       <Layout>
         <div className="w-[30rem] m-auto pt-10">
           <div className="mb-14">
-            <h3 className="text-2xl text-center text-primary font-semibold mb-6">로그인</h3>
+            <h3 className="mb-6 text-2xl font-semibold text-center text-primary">로그인</h3>
             <p className="text-lg text-center text-gray400">이메일로 로그인</p>
           </div>
 
@@ -143,9 +167,17 @@ const Login = () => {
             로그인
           </Button>
           <KakaoButton buttonText="카카오로 시작하기" onSubmit={handleKakaoLogin} />
-          <div className="text-center mt-8 font-light">
+          <Button
+            className="flex items-center w-full gap-6 mt-2 text-white bg-green-500 hover:bg-green-600 active:bg-green-700"
+            onClick={handleNaverLogin}
+          >
+            <img className="h-full" src="/icons/naverlogo.png" alt="naverlogo" />
+            네이버로 시작하기
+          </Button>
+
+          <div className="mt-8 font-light text-center">
             아직 회원이 아니신가요?{' '}
-            <span onClick={() => navigate(PATH.register)} className="ml-2 underline text-blue500 cursor-pointer">
+            <span onClick={() => navigate(PATH.register)} className="ml-2 underline cursor-pointer text-blue500">
               회원가입
             </span>
           </div>

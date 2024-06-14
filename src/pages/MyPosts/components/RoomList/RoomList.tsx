@@ -49,6 +49,7 @@ const RoomList = () => {
                     userName={card?.memberName}
                     imageUrl={card?.thumbnailUrl}
                     lineClamp={1}
+                    likes={card.likeCount}
                     slot={<RoomCardSlot createdAt={card?.createdAt} commentCount={card?.commentCount} />}
                     onPageMove={() =>
                       navigate(

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { PATH, RECIEPE_PATH, ROOM_PATH, TALK_PATH } from '@/constants/paths';
+import { PATH, RECIPE_PATH, ROOM_PATH, TALK_PATH, CHAT_PATH } from '@/constants/paths';
 
 import AuthRouter from './AuthRouter';
 import UserRouter from './UserRouter';
@@ -8,18 +8,23 @@ import UserRouter from './UserRouter';
 import { MainPage } from '@/pages/Main';
 import { LoginPage } from '@/pages/Login';
 import { RegisterPage } from '@/pages/Register';
-import { ReciepePage } from '@/pages/Reciepe';
+import { RecipePage } from '@/pages/Recipe';
 import { RoomPage } from '@/pages/Room';
 import { TalkPage } from '@/pages/Talk';
 import { Mypage } from '@/pages/Mypage';
-import { ReciepeDetailPage } from '@/pages/ReciepeDetail';
+import { RecipeDetailPage } from '@/pages/RecipeDetail';
 import { RoomDetailPage } from '@/pages/RoomDetail';
 import { TalkDetailPage } from '@/pages/TalkDetail';
-import { ReciepeWritePage } from '@/pages/ReciepeWrite';
+import { RecipeWritePage } from '@/pages/RecipeWrite';
 import { RoomWritePage } from '@/pages/RoomWrite';
+import { ChattingsPage } from '@/pages/Chattings';
+import { ChattingPage } from '@/pages/Chatting';
+
 import { KakaoCallbackPage } from '@/pages/KakaoCallback';
 import { NotFoundPage } from '@/pages/NotFound';
 import { TalkWritePage } from '@/pages/TalkWrite';
+import { NaverCallbackPage } from '@/pages/NaverCallback';
+// import { RecipeEditPage } from '@/pages/RecipeEdit';
 import { MyPosts } from '@/pages/MyPosts';
 
 const Router = () => {
@@ -32,11 +37,12 @@ const Router = () => {
           <Route path={PATH.login} element={<LoginPage />} />
           <Route path={PATH.register} element={<RegisterPage />} />
           <Route path={PATH.kakao} element={<KakaoCallbackPage />} />
+          <Route path={PATH.naver} element={<NaverCallbackPage />} />
         </Route>
 
-        <Route path={PATH.receipe} element={<ReciepePage />} />
-        <Route path={PATH.receipeWrite} element={<ReciepeWritePage />} />
-        <Route path={RECIEPE_PATH.detail} element={<ReciepeDetailPage />} />
+        <Route path={PATH.recipe} element={<RecipePage />} />
+        <Route path={PATH.recipeWrite} element={<RecipeWritePage />} />
+        <Route path={RECIPE_PATH.detail} element={<RecipeDetailPage />} />
 
         <Route path={PATH.room} element={<RoomPage />} />
         <Route path={ROOM_PATH.detail} element={<RoomDetailPage />} />
@@ -50,6 +56,10 @@ const Router = () => {
           <Route path={PATH.mypage} element={<Mypage />} />
           <Route path={PATH.myPosts} element={<MyPosts />} />
         </Route>
+
+        <Route path={PATH.chattings} element={<ChattingsPage />} />
+        <Route path={CHAT_PATH.detail} element={<ChattingPage />} />
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

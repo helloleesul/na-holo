@@ -1,12 +1,12 @@
 import * as yup from 'yup';
 
 // yup 스키마 정의
-export const reciepeSchema = yup.object().shape({
+export const RecipeSchema = yup.object().shape({
   title: yup.string().required('레시피 이름을 입력해주세요'),
   description: yup.string().required('간단한 한 줄 소개를 부탁드려요'),
   cuisine: yup.string().required('Cuisine is required'),
-  reciepeType: yup.string().required('Recipe type is required'),
-  reciepeTime: yup.string().required('Recipe time is required'),
+  recipeType: yup.string().required('Recipe type is required'),
+  recipeTime: yup.string().required('Recipe time is required'),
   portions: yup.string().required('Portions is required'),
   images: yup.array().of(
     yup.object().shape({

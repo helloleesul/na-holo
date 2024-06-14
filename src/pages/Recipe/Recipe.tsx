@@ -16,7 +16,7 @@ import { CATEGORY_OPTIONS } from '../Main/constants';
 import { Pagination } from '@/components/Pagination';
 
 import { useNavigate, generatePath } from 'react-router-dom';
-import { PATH, RECIEPE_PATH } from '@/constants/paths';
+import { PATH, RECIPE_PATH } from '@/constants/paths';
 import { Button } from '@/components/ui/button';
 
 import { useRecipeListQuery } from '@/services/recipe/useRecipeListQuery';
@@ -53,13 +53,13 @@ const Receipe = () => {
             </div>
           </div>
         </FormProvider>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <ListTitle
             imgPath="/icons/receipe_icon.png"
             title="트렌드 레시피"
             description="하루 10분이면 뚝딱! 사용자들이 많이 보고 있는 레시피에요"
           />
-          <Button className="rounded-full" onClick={() => navigate(PATH.receipeWrite)}>
+          <Button className="rounded-full" onClick={() => navigate(PATH.recipeWrite)}>
             새 글 작성
           </Button>
         </div>
@@ -86,7 +86,7 @@ const Receipe = () => {
                   likes={40}
                   onPageMove={() =>
                     navigate(
-                      generatePath(RECIEPE_PATH.detail, {
+                      generatePath(RECIPE_PATH.detail, {
                         id: card.id.toString(),
                       }),
                     )
@@ -95,7 +95,7 @@ const Receipe = () => {
               ))}
         </div>
         <ListTitle imgPath="/icons/receipe_icon.png" title="모든 레시피" />
-        <div className="grid grid-cols-4 gap-6 place-items-start py-12">
+        <div className="grid grid-cols-4 gap-6 py-12 place-items-start">
           {isLoading || isFetching
             ? Array.from({ length: 20 }).map((_, index) => <SkeletonCard key={index} />)
             : data?.content?.map((card, i) => (
@@ -117,7 +117,7 @@ const Receipe = () => {
                   likes={40}
                   onPageMove={() =>
                     navigate(
-                      generatePath(RECIEPE_PATH.detail, {
+                      generatePath(RECIPE_PATH.detail, {
                         id: card.id.toString(),
                       }),
                     )

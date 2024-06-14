@@ -1,72 +1,78 @@
-import { useForm, FormProvider } from 'react-hook-form';
-import { Search } from 'lucide-react';
+import { generatePath, useNavigate } from 'react-router-dom';
 
 import { Layout } from '@/layout';
 
 import { Appbar } from '@/components/Appbar';
-import { Select } from '@/components/Select';
-import { Searchbar } from '@/components/Searchbar';
 import { Card } from '@/components/Card';
 import { Card as TextCard } from '@/components/Card';
 import { Footer } from '@/components/Footer';
+import { SkeletonCard } from '@/components/Skeleton';
+
 import { PriceSlot } from './components/PriceSlot';
-import { DateSlot } from './components/DateSlot';
 import { ListTitle } from './components/ListTitle';
 
-import { PATH } from '@/constants/paths';
-import { CATEGORY_OPTIONS } from './constants';
+import { PATH, RECIPE_PATH, ROOM_PATH, TALK_PATH } from '@/constants/paths';
 
-import { usePageMoveHandler } from '@/hooks/usePageMoveHandler';
+import { useTrendsRecipeListQuery } from '@/services/recipe/useTrendsRecipeListQuery';
+import { useViewRoomListQuery } from '@/services/room/useViewRoomListQuery';
+import { useViewTalkListQuery } from '@/services/talk/useViewTalkListQuery';
+import { RoomCardSlot } from '../Room/components/RoomCardSlot';
 
 const Main = () => {
-  const navigate = usePageMoveHandler();
-  /**
-   * 검색창에서 메인페이지 전체 렌더링 발생했던 부분
-   * - 콘솔에 watch 메서드로 상태찍고 있었어서 그랬던 거였숩니다...
-   */
-  const method = useForm({
-    values: { category: '전체', query: '' },
-  });
+  const navigate = useNavigate();
+
+  const { data: recipeData, isLoading: recipeIsLoading, isFetching: recipeIsFetching } = useTrendsRecipeListQuery();
+  const { data: roomData, isLoading: roomIsLoading, isFetching: roomIsFetching } = useViewRoomListQuery();
+  const { data: talkData, isLoading: talkIsLoading, isFetching: talkIsFetching } = useViewTalkListQuery();
 
   return (
     <>
       <Appbar />
+
+      <div className="bg-[#10BE62] -mt-12">
+        <img src="/images/main_img.png" className="w-1/2 my-0 mx-auto" />
+      </div>
+
       <Layout>
-        <FormProvider {...method}>
-          <div className="flex w-[40rem] gap-4 mx-auto">
-            <Select name="category" options={CATEGORY_OPTIONS} />
-            <div className="w-[40rem] m-auto relative">
-              <Searchbar />
-              <Search className="absolute top-[0.5rem] right-[0.6rem] appearance-none" stroke="#737373" />
-            </div>
-          </div>
-        </FormProvider>
+        {/* 트렌드 레시피 */}
         <ListTitle
           imgPath="/icons/receipe_icon.png"
           title="트렌드 레시피"
           description="하루 10분이면 뚝딱! 사용자들이 많이 보고 있는 레시피에요"
-          onPageMove={() => navigate(PATH.receipe)}
+          onPageMove={() => navigate(PATH.recipe)}
         />
-
         <div className="grid grid-cols-4 gap-6 place-items-start">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Card
-              key={i}
-              description="배고파요"
-              imageUrl="https://github.com/shadcn.png"
-              lineClamp={1}
-              slot={
-                <PriceSlot
-                  cookInfo={{
-                    portions: 3,
-                    cookTime: '30분',
-                  }}
+          {recipeIsLoading || recipeIsFetching
+            ? Array.from({ length: recipeData?.size as number }).map((_, index) => <SkeletonCard key={index} />)
+            : recipeData?.content?.map((card, i) => (
+                <Card
+                  key={i}
+                  title={card?.title}
+                  description={card?.description}
+                  userName={card?.userName}
+                  imageUrl={card?.imageUrl}
+                  lineClamp={1}
+                  slot={
+                    <PriceSlot
+                      cookInfo={{
+                        portions: card?.portions,
+                        cookTime: card?.recipeTime,
+                      }}
+                    />
+                  }
+                  likes={40}
+                  onPageMove={() =>
+                    navigate(
+                      generatePath(RECIPE_PATH.detail, {
+                        id: card.id.toString(),
+                      }),
+                    )
+                  }
                 />
-              }
-              likes={40}
-            />
-          ))}
+              ))}
         </div>
+
+        {/* 인기 방자랑 */}
         <ListTitle
           imgPath="/icons/room_icon.png"
           title="최근 인기 방자랑"
@@ -74,34 +80,57 @@ const Main = () => {
           onPageMove={() => navigate(PATH.room)}
         />
         <div className="grid grid-cols-4 gap-6 place-items-start">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Card
-              key={i}
-              description="배고파요"
-              imageUrl="https://github.com/shadcn.png"
-              lineClamp={1}
-              slot={<DateSlot dateTime="2024년 5월 31일" />}
-              likes={40}
-            />
-          ))}
+          {roomIsLoading || roomIsFetching
+            ? Array.from({ length: roomData?.size as number }).map((_, index) => <SkeletonCard key={index} />)
+            : roomData?.content?.map((card, i) => (
+                <Card
+                  key={i}
+                  likes={card?.likeCount}
+                  title={card?.title}
+                  userName={card?.memberName}
+                  userImage={card?.imageUrl}
+                  imageUrl={card?.thumbnailUrl}
+                  lineClamp={1}
+                  slot={<RoomCardSlot createdAt={card?.createdAt} commentCount={card?.commentCount} />}
+                  onPageMove={() =>
+                    navigate(
+                      generatePath(ROOM_PATH.detail, {
+                        id: card.id.toString(),
+                      }),
+                    )
+                  }
+                />
+              ))}
         </div>
 
+        {/* 인기 혼잣말 */}
         <ListTitle
           imgPath="/icons/single_ment.png"
           title="나홀로 집에서 혼잣말"
           description="혼잣말은 일상생활에 힘이 됩니다."
           onPageMove={() => navigate(PATH.talk)}
         />
-        <div className="grid grid-cols-4 gap-6 place-items-start mb-20">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <TextCard
-              key={i}
-              description="배교파요"
-              lineClamp={2}
-              slot={<DateSlot dateTime="2024년 5월 12일" />}
-              likes={40}
-            />
-          ))}
+        <div className="grid grid-cols-4 gap-6 mb-20 place-items-start">
+          {talkIsLoading || talkIsFetching
+            ? Array.from({ length: talkData?.size as number }).map((_, index) => <SkeletonCard key={index} />)
+            : talkData?.content?.map((card) => (
+                <TextCard
+                  key={card?.id}
+                  description={card?.contentSummary}
+                  title={card?.title}
+                  userName={card?.memberName}
+                  lineClamp={1}
+                  slot={<RoomCardSlot createdAt={card?.createdAt} commentCount={card?.commentCount} />}
+                  likes={card?.likeCount}
+                  onPageMove={() =>
+                    navigate(
+                      generatePath(TALK_PATH.detail, {
+                        id: card.id.toString(),
+                      }),
+                    )
+                  }
+                />
+              ))}
         </div>
       </Layout>
       <Footer />

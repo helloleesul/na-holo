@@ -5,7 +5,7 @@ import { PriceSlot } from '@/pages/Main/components/PriceSlot';
 import { Pagination } from '@/components/Pagination';
 
 import { useNavigate, generatePath } from 'react-router-dom';
-import { RECIEPE_PATH } from '@/constants/paths';
+import { RECIPE_PATH } from '@/constants/paths';
 import { useMyRecipeListQuery } from '@/services/recipe/useMyRecipeListQuery';
 import { SkeletonCard } from '@/components/Skeleton';
 import { NoContents } from '../NoContents';
@@ -55,10 +55,10 @@ const RecipeList = () => {
                         }}
                       />
                     }
-                    likes={40}
+                    likes={card.relatedDto.likeCount}
                     onPageMove={() =>
                       navigate(
-                        generatePath(RECIEPE_PATH.detail, {
+                        generatePath(RECIPE_PATH.detail, {
                           id: card.id.toString(),
                         }),
                       )

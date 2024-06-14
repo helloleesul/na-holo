@@ -20,12 +20,12 @@ export const PATH = Object.freeze({
   /**
    * 레시피 페이지
    */
-  receipe: '/reciepe' as const,
+  recipe: '/recipe' as const,
 
   /**
    * 레시피 작성페이지
    */
-  receipeWrite: '/reciepe/write' as const,
+  recipeWrite: '/Recipe/write' as const,
 
   /**
    * 방자랑 페이지
@@ -48,6 +48,11 @@ export const PATH = Object.freeze({
   talkWrite: '/talk/write' as const,
 
   /**
+   * 채팅방 목록 페이지
+   */
+  chattings: '/chattings' as const,
+
+  /**
    * 마이페이지
    */
   mypage: '/mypage' as const,
@@ -61,16 +66,21 @@ export const PATH = Object.freeze({
    * 카카오 로그인 redirect uri
    */
   kakao: '/kakao/callback' as const,
+
+  /**
+   * 네이버 로그인 redirect uri
+   */
+  naver: '/naver/login' as const,
 });
 
 /**
- * Reciepe 상세
+ * Recipe 상세
  */
-export const RECIEPE_PATH = Object.freeze({
+export const RECIPE_PATH = Object.freeze({
   /**
    * generatePath
    */
-  detail: '/reciepe/:id' as const,
+  detail: '/recipe/:id' as const,
 });
 
 /**
@@ -80,7 +90,7 @@ export const ROOM_PATH = {
   /**
    * generatePath
    */
-  detail: '/room/:id' as const,
+  detail: '/room/:id',
 };
 
 /**
@@ -90,7 +100,17 @@ export const TALK_PATH = Object.freeze({
   /**
    * generatePath
    */
-  detail: '/talk/:id' as const,
+  detail: '/talk/:id',
+});
+
+/**
+ * chat 채팅방 상세
+ */
+export const CHAT_PATH = Object.freeze({
+  /**
+   * generatePath
+   */
+  detail: '/chatting/:id' as const,
 });
 
 export type PathValue = ValueOf<typeof PATH>;

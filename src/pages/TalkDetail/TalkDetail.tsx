@@ -8,7 +8,7 @@ import { Marks } from '@/components/Marks';
 import { useCommentListQuery } from '@/services/comment/useCommentListQuery';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { commentSchema } from '../ReciepeDetail/validator';
+import { commentSchema } from '../RecipeDetail/validator';
 import { SkeletonComment } from '@/components/SkeletonComment';
 import { useUserStore } from '@/store/useUserStore';
 import { Comment } from '@/components/Comment';

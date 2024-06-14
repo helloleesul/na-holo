@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => ({
     cors: true,
     proxy: {
       '/api': {
-        target: 'http://34.64.55.198/',
+        target: 'http://34.22.76.244/',
         changeOrigin: true,
       },
     },

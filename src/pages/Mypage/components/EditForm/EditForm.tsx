@@ -36,7 +36,7 @@ const EditForm = () => {
       image: { image: null, imageUrl: imageUrl },
       name: name,
       email: email,
-      birth: birthDateCleansing(birth),
+      birth: !birth ? birthDateCleansing(birth) : '',
       firstAddress: firstAddress,
       secondAddress: secondAddress,
     },
@@ -99,7 +99,7 @@ const EditForm = () => {
 
   return (
     <form className="flex flex-col text-gray-600 border-b-[0.063rem] border-gray-200" onSubmit={handleSubmit}>
-      <div className="flex flex-col gap-9 w-full">
+      <div className="flex flex-col w-full gap-9">
         <div className="flex flex-col w-48">
           <Label className="mb-2" htmlFor="img">
             프로필 이미지

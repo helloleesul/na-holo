@@ -1,7 +1,7 @@
 import { apiFetch } from '../common';
 import { ResponseModel } from '../model';
 
-export interface RecipeListGetFetchParmas {
+export interface RecipeListGetFetchParams {
   /**
    * 요청할 페이지 번호
    * - 0 이 1번째
@@ -60,6 +60,14 @@ export interface RecipeListResponse extends ResponseModel {
      * 유저 이름
      */
     userName: string;
+
+    relatedDto: {
+      likeCount: number;
+      scrapCount: number;
+      commentCount: number;
+      likeByCurrentUser: boolean;
+      bookmarked: boolean;
+    };
   }[];
 
   /**
@@ -86,13 +94,25 @@ export interface RecipeListResponse extends ResponseModel {
    * 총 페이지 갯수
    */
   totalPages: number;
+
+  /**
+   * 현재 보여주는 갯수
+   */
+  size: number;
 }
 
 /**
  * 레시피 게시글 조회 (페이지네이션)
  */
-export const recipeListGetFetch = (params: RecipeListGetFetchParmas) => {
+export const recipeListGetFetch = (params: RecipeListGetFetchParams) => {
   const { page = 0, size = 20 } = params;
 
   return apiFetch.get<RecipeListResponse>(`/recipes?page=${page}&size=${size}&sort=createdAt,desc`);
+};
+
+/**
+ * 트렌드 레시피 조회
+ */
+export const trendsRecipeListGetFetch = () => {
+  return apiFetch.get<RecipeListResponse>('/recipes/trends?page=0');
 };

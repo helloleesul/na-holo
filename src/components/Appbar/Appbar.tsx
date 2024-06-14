@@ -29,15 +29,15 @@ const Appbar = () => {
 
   return (
     <Layout>
-      <div className="row header flex justify-between items-center py-4 mb-12 select-none">
-        <div className="header-left flex items-center">
+      <div className="flex items-center justify-between py-4 mb-12 select-none row header">
+        <div className="flex items-center header-left">
           <h1 className="cursor-pointer" onClick={() => navigate(PATH.root)}>
             <span className="block indent-[-9999px] absolute">나홀로 집에서(자취 커뮤니티)</span>
             <img className="w-[4rem] h-[4rem]" src="/icons/logo_svg_square.svg" alt="프로젝트 로고" />
           </h1>
           <nav className="ml-10">
             <ul className="flex items-center gap-4">
-              <List path={PATH.receipe} onPageMove={() => navigate(PATH.receipe)}>
+              <List path={PATH.recipe} onPageMove={() => navigate(PATH.recipe)}>
                 레시피
               </List>
               <List path={PATH.room} onPageMove={() => navigate(PATH.room)}>
@@ -50,11 +50,11 @@ const Appbar = () => {
           </nav>
         </div>
         <div className="header-right">
-          <ul className="flex justify-center items-center">
+          <ul className="flex items-center justify-center">
             {accessToken ? (
               <>
                 <li>
-                  <div className="flex items-center gap-2 cursor-pointer relative" onClick={isOpen ? onClose : onOpen}>
+                  <div className="relative flex items-center gap-2 cursor-pointer" onClick={isOpen ? onClose : onOpen}>
                     <Avatar>
                       <AvatarImage src={imgUrl || 'https://github.com/shadcn.png'} alt="프로필 이미지" />
                       <AvatarFallback>nickname state</AvatarFallback>

@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/useToast';
 import { CircleCheck, CircleXIcon } from 'lucide-react';
 import { isAxiosError } from 'axios';
 import { Spinner } from '@/components/Spinner';
+import dayjs from 'dayjs';
 
 const KakaoCallback = () => {
   const location = useLocation();
@@ -50,7 +51,9 @@ const KakaoCallback = () => {
 
           const userInfoResponse = await memberInfoGetFetch();
 
-          setUserInfo(userInfoResponse.data);
+          const birth = !userInfoResponse.data.birth ? '' : dayjs(userInfoResponse.data.birth).format('YYYYMMDD');
+
+          setUserInfo({ ...userInfoResponse.data, birth });
 
           toast({
             title: '카카오로 로그인 했어요!',

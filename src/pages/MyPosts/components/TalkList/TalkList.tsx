@@ -49,7 +49,7 @@ const TalkList = () => {
                       userName={card?.memberName}
                       lineClamp={2}
                       slot={<DateSlot dateTime={dayjs(card?.createdAt).format('YYYY-MM-DD')} />}
-                      likes={40}
+                      likes={card.likeCount}
                       onPageMove={() =>
                         navigate(
                           generatePath(TALK_PATH.detail, {

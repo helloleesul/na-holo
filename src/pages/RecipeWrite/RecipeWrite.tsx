@@ -18,23 +18,23 @@ import { Spinner } from '@/components/Spinner';
 import { usePageMoveHandler } from '@/hooks/usePageMoveHandler';
 import { useToast } from '@/hooks/useToast';
 
-import { writeReciepePostFetch } from '@/api/reciepe/writeReciepePostFetch';
+import { writeRecipePostFetch } from '@/api/recipe/writeRecipePostFetch';
 
-import { getReciepeCleansingData } from './util';
+import { getRecipeCleansingData } from './util';
 
-import { FOOD_CATEGORIES, COOK_TIME, PORTIONS, RECIEPE_TYPE } from './constants';
+import { FOOD_CATEGORIES, COOK_TIME, PORTIONS, RECIPE_TYPE } from './constants';
 import { PATH } from '@/constants/paths';
 
-import { reciepeSchema } from './validator';
+import { RecipeSchema } from './validator';
 import { isAxiosError } from 'axios';
 import { TOAST } from '@/constants/toast';
 
-export type ReciepeSchemaType = yup.InferType<typeof reciepeSchema>;
+export type RecipeSchemaType = yup.InferType<typeof RecipeSchema>;
 
 /**
  * 레시피 작성 페이지
  */
-const ReciepeWrite = () => {
+const RecipeWrite = () => {
   const navigate = usePageMoveHandler();
 
   const { toast } = useToast();
@@ -42,13 +42,13 @@ const ReciepeWrite = () => {
   const [displaySpinner, setDisplaySpinner] = useState<boolean>(false);
 
   const method = useForm({
-    resolver: yupResolver(reciepeSchema),
+    resolver: yupResolver(RecipeSchema),
     defaultValues: {
       title: '',
       description: '',
       cuisine: '한식',
-      reciepeType: '밥/죽/떡',
-      reciepeTime: '15분',
+      recipeType: '밥/죽/떡',
+      recipeTime: '15분',
       portions: '1인분',
       images: [
         {
@@ -112,9 +112,9 @@ const ReciepeWrite = () => {
     try {
       setDisplaySpinner(true);
 
-      const writeParams = await getReciepeCleansingData(getValues());
+      const writeParams = await getRecipeCleansingData(getValues());
 
-      const writeRes = await writeReciepePostFetch(writeParams);
+      const writeRes = await writeRecipePostFetch(writeParams);
 
       setDisplaySpinner(false);
 
@@ -124,7 +124,7 @@ const ReciepeWrite = () => {
         className: TOAST.success,
       });
 
-      navigate(PATH.receipe);
+      navigate(PATH.recipe);
     } catch (error) {
       console.error(error);
 
@@ -145,7 +145,7 @@ const ReciepeWrite = () => {
       {displaySpinner ? <Spinner>레시피를 등록 중 이에요 ... </Spinner> : null}
       <Appbar />
       <Layout>
-        <Button variant="ghost" className="flex items-center gap-2" onClick={() => navigate(PATH.receipe)}>
+        <Button variant="ghost" className="flex items-center gap-2" onClick={() => navigate(PATH.recipe)}>
           <Undo2 />
           <span className="text-xl">돌아갈래요</span>
         </Button>
@@ -153,7 +153,7 @@ const ReciepeWrite = () => {
           <ListTitle imgPath="/icons/receipe_icon.png" title="레시피 작성 중이에요 ..." />
         </div>
         <FormProvider {...method}>
-          <div className="container w-11/12 mx-auto flex justify-between">
+          <div className="container flex justify-between w-11/12 mx-auto">
             <div className="basis-1/2">
               <div className="mt-8">
                 <Input
@@ -179,16 +179,16 @@ const ReciepeWrite = () => {
                 <Select name="cuisine" id="cuisine" label="카테고리" options={FOOD_CATEGORIES} />
               </div>
               <div className="mt-8">
-                <Select name="reciepeType" id="reciepeType" label="요리 유형" options={RECIEPE_TYPE} />
+                <Select name="recipeType" id="recipeType" label="요리 유형" options={RECIPE_TYPE} />
               </div>
               <div className="mt-8">
-                <Select name="reciepeTime" id="reciepeTime" label="조리시간" options={COOK_TIME} />
+                <Select name="recipeTime" id="recipeTime" label="조리시간" options={COOK_TIME} />
               </div>
               <div className="mt-8">
                 <Select name="portions" id="portions" label="👨🏿‍🦳인분" options={PORTIONS} />
               </div>
             </div>
-            <div className="upload mt-8 basis-5/12">
+            <div className="mt-8 upload basis-5/12">
               <div
                 style={{
                   backgroundImage: file.imageUrl ? `url(${file.imageUrl})` : 'none',
@@ -200,7 +200,7 @@ const ReciepeWrite = () => {
                     : 'bg-[#f5f5f5]'
                 }`}
               >
-                <div className="flex flex-col justify-center items-center">
+                <div className="flex flex-col items-center justify-center">
                   {file.imageUrl && file.image instanceof File ? null : (
                     <Image size={16} color={`${file.imageUrl ? '#2d3748' : '#a0aec0'}`} strokeWidth={1.25} />
                   )}
@@ -216,33 +216,33 @@ const ReciepeWrite = () => {
                 </div>
               </div>
               {errors?.images?.[0]?.imageUrl ? (
-                <p className="mt-2 text-sm text-red-600 text-left">{errors?.images?.[0]?.imageUrl.message}</p>
+                <p className="mt-2 text-sm text-left text-red-600">{errors?.images?.[0]?.imageUrl.message}</p>
               ) : null}
               <input ref={uploadRef} className="hidden" accept="image/*" type="file" onChange={handleFileChange} />
             </div>
           </div>
-          <div className="container w-11/12 mx-auto flex flex-col  mt-8">
+          <div className="container flex flex-col w-11/12 mx-auto mt-8">
             <ul>
               <li>재료정보</li>
-              <li className="text-gray400 text-sm mt-2">
+              <li className="mt-2 text-sm text-gray400">
                 재료가 남거나 부족하지 않도록 정확한 계량 정보를 적어주세요!
               </li>
             </ul>
-            <div className="flex flex-col w-full justify-center">
+            <div className="flex flex-col justify-center w-full">
               <IngredientFields />
             </div>
           </div>
-          <div className="container w-11/12 mx-auto flex flex-col  mt-8 mb-20">
+          <div className="container flex flex-col w-11/12 mx-auto mt-8 mb-20">
             <ul>
               <li>조리 순서</li>
-              <li className="text-gray400 text-sm mt-2">이해를 돕기 위해 사진을 업로드해주세요! (선택사항)</li>
+              <li className="mt-2 text-sm text-gray400">이해를 돕기 위해 사진을 업로드해주세요! (선택사항)</li>
             </ul>
-            <div className="flex flex-col w-full justify-center">
+            <div className="flex flex-col justify-center w-full">
               <CookingOrderFields />
             </div>
           </div>
-          <div className="w-fit mx-auto py-20">
-            <Button className="rounded-lg w-24 text-lg" onClick={handleSubmit}>
+          <div className="py-20 mx-auto w-fit">
+            <Button className="w-24 text-lg rounded-lg" onClick={handleSubmit}>
               등록하기
             </Button>
           </div>
@@ -252,4 +252,4 @@ const ReciepeWrite = () => {
   );
 };
 
-export default ReciepeWrite;
+export default RecipeWrite;

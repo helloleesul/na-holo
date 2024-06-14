@@ -86,6 +86,11 @@ export interface RoomListResponse extends ResponseModel {
    * 총 페이지 갯수
    */
   totalPages: number;
+
+  /**
+   * 현재 보여주는 갯수
+   */
+  size: number;
 }
 
 /**
@@ -95,4 +100,11 @@ export const roomListGetFetch = (params: RoomListGetFetchParams) => {
   const { page = 0, size = 20 } = params;
 
   return apiFetch.get<RoomListResponse>(`/room?page=${page}&size=${size}&sort=createdAt,desc`);
+};
+
+/**
+ * 인기 방자랑 조회
+ */
+export const viewRoomListGetFetch = () => {
+  return apiFetch.get<RoomListResponse>('/room/view?page=0');
 };

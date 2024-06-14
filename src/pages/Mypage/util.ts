@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { MemberSchemaType } from './Mypage';
 import { uploadImage } from '@/utils/uploadImage';
+
 /**
  * 회원정보수정 fetch 파라미터를 포맷팅한다.
  */

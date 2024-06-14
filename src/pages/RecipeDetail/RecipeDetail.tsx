@@ -16,7 +16,7 @@ import { useCommentListQuery } from '@/services/comment/useCommentListQuery';
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
-// import { COOK_TIME } from '../ReciepeWrite/constants';
+// import { COOK_TIME } from '../RecipeWrite/constants';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { commentSchema } from './validator';
 import { addCommentPostFetch } from '@/api/comment/addCommentPostFetch';
@@ -28,12 +28,12 @@ import { SkeletonComment } from '@/components/SkeletonComment';
 /**
  * 레시피 게시글 상세페이지
  */
-const ReciepeDetail = () => {
+const RecipeDetail = () => {
   const { pathname } = useLocation();
 
   const id = pathname.split('/')[2];
   const userId = useUserStore((state) => state.id);
-  const imageUrl = useUserStore((state) => state.image_url);
+  const imageUrl = useUserStore((state) => state.imageUrl);
 
   const { data, refetch: detailRefetch, isFetching: detailFetching } = useRecipeDetailQuery({ id });
 
@@ -85,9 +85,9 @@ const ReciepeDetail = () => {
       <Layout>
         {!detailFetching ? (
           <>
-            <Marks postId={Number(id)} data={data} refetch={detailRefetch} />
-            <div className="w-3/4 mx-auto pb-24">
-              <div className="flex gap-2 items-center text-lg">
+            <Marks postId={parseInt(id, 10)} data={data} refetch={detailRefetch} />
+            <div className="w-3/4 pb-24 mx-auto">
+              <div className="flex items-center gap-2 text-lg">
                 <Avatar>
                   <AvatarImage
                     src={
@@ -99,7 +99,7 @@ const ReciepeDetail = () => {
                 By <span className="text-sm font-light">{data?.userName}</span>
               </div>
 
-              <div className="mt-8 flex gap-2 flex-col justify-center">
+              <div className="flex flex-col justify-center gap-2 mt-8">
                 <h3 className="text-2xl font-semibold">{data?.title}</h3>
                 <p className="text-lg font-light">{data?.description}</p>
               </div>
@@ -108,7 +108,7 @@ const ReciepeDetail = () => {
               {data && data?.postTags.length > 0 ? (
                 <div className="mt-2">
                   {data?.postTags.map((item, i) => (
-                    <Badge key={i} className="bg-gray300 text-gray700 hover:bg-gray300 ml-1">
+                    <Badge key={i} className="ml-1 bg-gray300 text-gray700 hover:bg-gray300">
                       {item.tagName}
                     </Badge>
                   ))}
@@ -117,11 +117,11 @@ const ReciepeDetail = () => {
 
               <ListTitle title="재료" imgPath="/icons/receipe_icon.png" />
               {data && data?.ingredients.length > 0 ? (
-                <div className="mt-2 flex flex-wrap flex-col gap-4">
+                <div className="flex flex-col flex-wrap gap-4 mt-2">
                   {data?.ingredients.map((item, i) => (
                     <div key={i} className="flex ">
                       <div>{item.name}</div>
-                      <Badge key={i} className="bg-gray300 text-gray700 hover:bg-gray300 ml-1">
+                      <Badge key={i} className="ml-1 bg-gray300 text-gray700 hover:bg-gray300">
                         {item.quantity || '적당히'}
                         {item.unit}
                       </Badge>
@@ -132,7 +132,7 @@ const ReciepeDetail = () => {
 
               <ListTitle title="조리순서" imgPath="/icons/receipe_icon.png" />
 
-              <div className="mt-4 grid grid-cols-3 gap-6 place-items-start py-4">
+              <div className="grid grid-cols-3 gap-6 py-4 mt-4 place-items-start">
                 {data?.details.map((item, i) => (
                   <Card
                     key={i}
@@ -163,9 +163,9 @@ const ReciepeDetail = () => {
                   <Comment key={item.id} write={userId === item?.memberId} commentRefetch={commentRefetch} {...item} />
                 ))
               ) : (
-                <div className="min-h-40 flex items-center justify-around p-4 border border-gray-300 shadow-md rounded-xl">
+                <div className="flex items-center justify-around p-4 border border-gray-300 shadow-md min-h-40 rounded-xl">
                   <div>
-                    <p className="leading-8  text-lg text-primary font-semibold">
+                    <p className="text-lg font-semibold leading-8 text-primary">
                       아직 댓글이 없는 게시글이에요. <br />첫 댓글의 주인공이 되어보세요!
                     </p>
                   </div>
@@ -182,4 +182,4 @@ const ReciepeDetail = () => {
   );
 };
 
-export default ReciepeDetail;
+export default RecipeDetail;

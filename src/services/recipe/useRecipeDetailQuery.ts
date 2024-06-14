@@ -1,6 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-
-import { recipeDetailGetFetch, RecipeDetailGetFetchParams } from '@/api/reciepe/recipeDetailGetFetch';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { recipeDetailGetFetch, RecipeDetailGetFetchParams } from '@/api/recipe/recipeDetailGetFetch';
 
 /**
  * 레시피 상세 조회
@@ -15,6 +14,6 @@ export const useRecipeDetailQuery = ({ id }: RecipeDetailGetFetchParams) =>
 
       return data;
     },
-
+    placeholderData: keepPreviousData,
     staleTime: 5000,
   });

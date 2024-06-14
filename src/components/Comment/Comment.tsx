@@ -8,7 +8,7 @@ import { QueryObserverResult } from '@tanstack/react-query';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Input } from '@/components/Input';
 import { Button } from '@/components/ui/button';
-import { commentSchema } from '@/pages/ReciepeDetail/validator';
+import { commentSchema } from '@/pages/RecipeDetail/validator';
 
 import { useToast } from '@/hooks/useToast';
 
@@ -63,16 +63,16 @@ const Comment = (props: CommentPropsType) => {
 
       const content = getValues('content');
 
-      const updateParmas = {
+      const updateParams = {
         id: rest.id,
         content,
         postId: rest.postId,
       };
 
-      const udpateResponse = await updateCommentPatchFetch(updateParmas);
+      const updateResponse = await updateCommentPatchFetch(updateParams);
 
       toast({
-        title: udpateResponse.data.message || '댓글이 수정되었어요.',
+        title: updateResponse.data.message || '댓글이 수정되었어요.',
         icon: <CircleCheck />,
         className: TOAST.success,
       });
