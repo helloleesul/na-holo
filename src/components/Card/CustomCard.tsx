@@ -105,7 +105,7 @@ const CustomCard = (props: CustomCardPropsType) => {
           </div>
         ) : null}
 
-        {!imageUrl && likes ? (
+        {!imageUrl ? (
           <div className="flex gap-1 items-center rounded-2xl bg-gray400 opacity-70 px-2 py-1 mt-auto ml-auto">
             <Heart fill="#fff" stroke="#fff" className="w-3 h-3" />
             <span className="text-white font-extralight text-sm">{likes}</span>

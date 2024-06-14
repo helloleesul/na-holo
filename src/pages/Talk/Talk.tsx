@@ -71,7 +71,7 @@ const Talk = () => {
                   title={card?.title}
                   userName={card?.memberName}
                   lineClamp={1}
-                  userImageUrl={card?.imageUrl}
+                  userImage={card?.imageUrl}
                   slot={<RoomCardSlot createdAt={card?.createdAt} commentCount={card?.commentCount} />}
                   likes={card?.likeCount}
                   onPageMove={() =>
