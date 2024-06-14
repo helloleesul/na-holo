@@ -2,9 +2,6 @@ import { addCommentPostFetch } from '@/api/comment/addCommentPostFetch';
 import { Appbar } from '@/components/Appbar';
 import { Layout } from '@/layout';
 import { useTalkDetailQuery } from '@/services/talk/useTalkDetailQuery';
-import { useLocation } from 'react-router-dom';
-// import { Comment } from '@/components/Comment';
-// import { CommentForm } from '@/components/CommentForm';
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Marks } from '@/components/Marks';
@@ -21,25 +18,43 @@ import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
 import { Eye, MessageSquareMore } from 'lucide-react';
 import parse from 'html-react-parser';
+import { PATH } from '@/constants/paths';
+import { useEffect } from 'react';
+import { useTalkDeleteMutation } from '@/services/talk/useTalkDeleteMutation';
+import { Confirm } from '@/components/Confirm';
+import { useModalStore } from '@/store/useModalStore';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 /**
  * 혼잣말 게시글 상세페이지
  */
 const TalkDetail = () => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const id = pathname.split('/')[2];
   const userId = useUserStore((state) => state.id);
   const imageUrl = useUserStore((state) => state.imageUrl);
 
+  const onOpen = useModalStore((state) => state.onOpen);
+  const setModal = useModalStore((state) => state.setModal);
+  const onClose = useModalStore((state) => state.onClose);
+
+  const { mutate } = useTalkDeleteMutation();
+
   const { data, refetch: detailRefetch, isLoading: detailLoading } = useTalkDetailQuery({ id });
 
   console.info(data);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   const {
     data: commentData,
     refetch: commentRefetch,
     isFetching: commentFetching,
-  } = useCommentListQuery({ postId: id });
+  } = useCommentListQuery({ postId: id.toString() });
 
   const method = useForm({
     resolver: yupResolver(commentSchema),
@@ -76,6 +91,11 @@ const TalkDetail = () => {
     }
   });
 
+  const handleRemoveTalk = () => {
+    mutate({ talkId: id });
+    onClose();
+  };
+
   return (
     <>
       <Appbar />
@@ -83,32 +103,55 @@ const TalkDetail = () => {
         {!detailLoading && data ? (
           <>
             <Marks postId={Number(id)} data={data} refetch={detailRefetch} />
-            <div className="w-3/4 mx-auto pb-24">
-              <div className="flex gap-2 items-center text-lg">
+            <div className="w-3/4 mx-auto flex flex-col gap-8 pb-8">
+              <section className="border-b pb-4 flex justify-between items-center">
+                <h3 className="text-3xl font-semibold">{data?.title}</h3>
                 {userId === data?.memberId && (
                   <div className="flex gap-4">
-                    <Button variant="secondary">수정</Button>
-                    <Button variant="secondary">삭제</Button>
+                    <Button
+                      className="rounded-none text-gray700  hover:bg-white hover:border-gray400"
+                      variant="outline"
+                      onClick={() => navigate(`${PATH.talkWrite}?id=${id}`)}
+                    >
+                      수정
+                    </Button>
+                    <Button
+                      className="rounded-none text-gray700  hover:bg-white hover:border-gray400"
+                      variant="outline"
+                      onClick={() => {
+                        setModal(
+                          <Confirm
+                            title="혼잣말 삭제"
+                            content="혼잣말을 삭제하시겠어요?"
+                            submitButtonText="삭제"
+                            onSubmit={handleRemoveTalk}
+                            onClose={onClose}
+                          />,
+                        );
+
+                        onOpen();
+                      }}
+                    >
+                      삭제
+                    </Button>
                   </div>
                 )}
-                <Avatar>
-                  <AvatarImage src={imageUrl} />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-light">{data?.memberName}</span>
-              </div>
-              <div>
+              </section>
+              <section className="flex items-center justify-between">
+                <div className="flex gap-2 items-center text-sm">
+                  <Avatar>
+                    <AvatarImage src={data?.imageUrl} />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-light">{data?.memberName}</span>
+                </div>
                 <span className="text-gray500 text-sm font-light">
                   {dayjs(data?.createdAt).format('YYYY년 MM월 DD일')}
                 </span>
-              </div>
-
-              <div className="mt-8 flex gap-2 flex-col justify-center">
-                <h3 className="text-2xl font-semibold">{data?.title}</h3>
-                <div className="h-44">
-                  <div className="no-tailwind">{parse(`${data?.content}`)}</div>
-                </div>
-              </div>
+              </section>
+              {data && <div className="h-36">{parse(`${data.content}`)}</div>}
+            </div>
+            <div className="w-3/4 mx-auto pb-24">
               <div className="flex gap-2 items-center justify-end text-gray500 text-sm border-t pt-5">
                 <div className="flex items-center gap-1">
                   <Eye strokeWidth="1.5" />
